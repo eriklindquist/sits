@@ -1,0 +1,114 @@
+# SEPAL (https://sepal.io) time-series exports.
+#
+# SEPAL normalizes every optical band and index, for every sensor it supports,
+# to the same convention before export: physical value (reflectance in [0, 1],
+# or an index in [-1, 1]) multiplied by 10000 and stored as int16, with 0 used
+# as the nodata value (see lib/js/ee/src/optical/imageProcess.js `toInt16()`
+# and lib/python/shared/stack_time_series.py `nodata_value` in the sepal repo).
+# This is a single cross-sensor convention, not a specific satellite product,
+# so one scale_factor/offset_value pair covers every band below.
+#
+# This source is for local files only (produced by the sepal-stack-time-series
+# post-processing step); there is no remote STAC/API service to query.
+
+sources:
+    SEPAL                    :
+        s3_class            : ["sepal_cube", "eo_cube", "raster_cube"]
+        service             : "LOCAL"
+        collections         :
+            TIME-SERIES     : &sepal_reflectance
+                bands       :
+                    BLUE    : &sepal_band
+                        missing_value : 0
+                        minimum_value : -10000
+                        maximum_value : 10000
+                        scale_factor  : 0.0001
+                        offset_value  : 0
+                        resampling    : "bilinear"
+                        resolution    : 30
+                        band_name     : "blue"
+                        data_type     : "INT2S"
+                    GREEN   :
+                        <<: *sepal_band
+                        band_name     : "green"
+                    RED     :
+                        <<: *sepal_band
+                        band_name     : "red"
+                    NIR     :
+                        <<: *sepal_band
+                        band_name     : "nir"
+                    SWIR1   :
+                        <<: *sepal_band
+                        band_name     : "swir1"
+                    SWIR2   :
+                        <<: *sepal_band
+                        band_name     : "swir2"
+                    AEROSOL :
+                        <<: *sepal_band
+                        band_name     : "aerosol"
+                    CIRRUS  :
+                        <<: *sepal_band
+                        band_name     : "cirrus"
+                    REDEDGE1:
+                        <<: *sepal_band
+                        band_name     : "redEdge1"
+                    REDEDGE2:
+                        <<: *sepal_band
+                        band_name     : "redEdge2"
+                    REDEDGE3:
+                        <<: *sepal_band
+                        band_name     : "redEdge3"
+                    REDEDGE4:
+                        <<: *sepal_band
+                        band_name     : "redEdge4"
+                    WATERVAPOR:
+                        <<: *sepal_band
+                        band_name     : "waterVapor"
+                    NDVI    :
+                        <<: *sepal_band
+                        band_name     : "ndvi"
+                    NDMI    :
+                        <<: *sepal_band
+                        band_name     : "ndmi"
+                    NDWI    :
+                        <<: *sepal_band
+                        band_name     : "ndwi"
+                    MNDWI   :
+                        <<: *sepal_band
+                        band_name     : "mndwi"
+                    EVI     :
+                        <<: *sepal_band
+                        band_name     : "evi"
+                    EVI2    :
+                        <<: *sepal_band
+                        band_name     : "evi2"
+                    SAVI    :
+                        <<: *sepal_band
+                        band_name     : "savi"
+                    NBR     :
+                        <<: *sepal_band
+                        band_name     : "nbr"
+                    MVI     :
+                        <<: *sepal_band
+                        band_name     : "mvi"
+                    NDFI    :
+                        <<: *sepal_band
+                        band_name     : "ndfi"
+                    KNDVI   :
+                        <<: *sepal_band
+                        minimum_value : 0
+                        band_name     : "kndvi"
+                    UI      :
+                        <<: *sepal_band
+                        maximum_value : 0
+                        band_name     : "ui"
+                satellite   : "SEPAL"
+                sensor      : "MULTI"
+                collection_name: "sepal-time-series"
+                open_data: false
+                open_data_token: false
+                tile_required: false
+                metadata_search : "feature"
+                ext_tolerance: 0
+                grid_system  : "NONE"
+                dates        : "1972 to now"
